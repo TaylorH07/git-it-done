@@ -23,22 +23,21 @@ var formSubmitHandler = function(event) {
 
 var getUserRepos = function(user) {
   // format the github api url
-  var apiUrl = 'https://api.github.com/users/' + user + '/repos';
+  var apiUrl = "https://api.github.com/repos/" + repo + "/issues?direction=asc";
 
+  fetch(apiUrl);
   // make a get request to url
-  fetch(apiUrl)
-    .then(function(response) {
-      // request was successful
-      if (response.ok) {
-        console.log(response);
-        response.json().then(function(data) {
-          console.log(data);
-          displayRepos(data, user);
-        });
-      } else {
-        alert('Error: ' + response.statusText);
-      }
-    })
+  fetch(apiUrl).then(function(response) {
+    // request was successful
+    if (response.ok) {
+      response.json().then(function(data) {
+        console.log(data);
+      });
+    }
+    else {
+      alert("There was a problem with your request!");
+    }
+  })
     .catch(function(error) {
       alert('Unable to connect to GitHub');
     });
@@ -83,6 +82,25 @@ var displayRepos = function(repos, searchTerm) {
 
     // append to container
     repoEl.appendChild(statusEl);
+    // create span to hold issue title
+  var titleEl = document.createElement("span");
+  titleEl.textContent = issues[i].title;
+
+  // append to container
+  issueEl.appendChild(titleEl);
+
+  // create a type element
+  var typeEl = document.createElement("span");
+
+  // check if issue is an actual issue or a pull request
+  if (issues[i].pull_request) {
+    typeEl.textContent = "(Pull request)";
+  } else {
+    typeEl.textContent = "(Issue)";
+  }
+
+// append to container
+issueEl.appendChild(typeEl);
 
     // append container to the dom
     repoContainerEl.appendChild(repoEl);
