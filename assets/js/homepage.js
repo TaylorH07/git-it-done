@@ -31,7 +31,12 @@ var getUserRepos = function(user) {
     // request was successful
     if (response.ok) {
       response.json().then(function(data) {
-        console.log(data);
+        displayIssues(data);
+    
+        // check if api has paginated issues
+        if (response.headers.get("Link")) {
+          console.log("repo has more than 30 issues");
+        }
       });
     }
     else {
